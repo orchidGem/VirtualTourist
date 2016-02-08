@@ -15,6 +15,8 @@
 		D1BD54DA1C681DB600A75BC7 /* VirtualTouristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1BD54D91C681DB600A75BC7 /* VirtualTouristTests.swift */; };
 		D1BD54E51C681DB600A75BC7 /* VirtualTouristUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1BD54E41C681DB600A75BC7 /* VirtualTouristUITests.swift */; };
 		D1BD54F31C68207B00A75BC7 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1BD54F21C68207B00A75BC7 /* MapKit.framework */; };
+		D1BD54F51C68260800A75BC7 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1BD54F41C68260800A75BC7 /* CoreDataStackManager.swift */; };
+		D1BD54F81C68271200A75BC7 /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1BD54F71C68271200A75BC7 /* Pin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,8 @@
 		D1BD54E41C681DB600A75BC7 /* VirtualTouristUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualTouristUITests.swift; sourceTree = "<group>"; };
 		D1BD54E61C681DB600A75BC7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D1BD54F21C68207B00A75BC7 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		D1BD54F41C68260800A75BC7 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
+		D1BD54F71C68271200A75BC7 /* Pin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,12 +105,14 @@
 		D1BD54C31C681DB600A75BC7 /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
+				D1BD54F61C6826BE00A75BC7 /* VirtualTourist */,
 				D1BD54C41C681DB600A75BC7 /* AppDelegate.swift */,
 				D1BD54C61C681DB600A75BC7 /* MapViewController.swift */,
 				D1BD54C81C681DB600A75BC7 /* Main.storyboard */,
 				D1BD54CB1C681DB600A75BC7 /* Assets.xcassets */,
 				D1BD54CD1C681DB600A75BC7 /* LaunchScreen.storyboard */,
 				D1BD54D01C681DB600A75BC7 /* Info.plist */,
+				D1BD54F41C68260800A75BC7 /* CoreDataStackManager.swift */,
 			);
 			path = VirtualTourist;
 			sourceTree = "<group>";
@@ -127,6 +133,14 @@
 				D1BD54E61C681DB600A75BC7 /* Info.plist */,
 			);
 			path = VirtualTouristUITests;
+			sourceTree = "<group>";
+		};
+		D1BD54F61C6826BE00A75BC7 /* VirtualTourist */ = {
+			isa = PBXGroup;
+			children = (
+				D1BD54F71C68271200A75BC7 /* Pin.swift */,
+			);
+			name = VirtualTourist;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -267,6 +281,8 @@
 			files = (
 				D1BD54C71C681DB600A75BC7 /* MapViewController.swift in Sources */,
 				D1BD54C51C681DB600A75BC7 /* AppDelegate.swift in Sources */,
+				D1BD54F51C68260800A75BC7 /* CoreDataStackManager.swift in Sources */,
+				D1BD54F81C68271200A75BC7 /* Pin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

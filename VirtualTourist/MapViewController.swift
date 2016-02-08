@@ -18,8 +18,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         
         mapView.delegate = self
+        
+        print(mapView.region)
     }
 
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        print("region changed")
+        print(mapView.region)
+    }
 
 }
 
