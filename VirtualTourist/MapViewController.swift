@@ -60,6 +60,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             Pin.Keys.Longitude : pinCoordinates.longitude
         ]
         
+        // Save new pin
         let newPin = Pin(dictionary: dictionary, context: sharedContext)
         CoreDataStackManager.sharedInstance().saveContext()
         
@@ -127,6 +128,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             pinView!.canShowCallout = true
             pinView!.pinColor = .Red
             pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+            pinView!.animatesDrop = true
         }
         else {
             pinView!.annotation = annotation
