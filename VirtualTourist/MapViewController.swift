@@ -113,40 +113,20 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 //    }
     
     // MARK: - MKMapViewDelegate
-    
-    // Here we create a view with a "right callout accessory view". You might choose to look into other
-    // decoration alternatives. Notice the similarity between this method and the cellForRowAtIndexPath
-    // method in TableViewDataSource.
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+
+        // Present photo album view controller
+        let photoAlbumViewContoller = storyboard!.instantiateViewControllerWithIdentifier("photoAlbumViewController") as! PhotoAlbumViewController
+        photoAlbumViewContoller.annotation.coordinate = view.annotation!.coordinate
+        navigationController!.pushViewController(photoAlbumViewContoller, animated: true)
         
-        let reuseId = "pin"
+        print("pin tapped")
+        print(view.annotation!.coordinate)
         
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
-        
-        if pinView == nil {
-            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            pinView!.canShowCallout = true
-            pinView!.pinColor = .Red
-            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
-            pinView!.animatesDrop = true
-        }
-        else {
-            pinView!.annotation = annotation
-        }
-        
-        return pinView
     }
     
-    // This delegate method is implemented to respond to taps. It opens the system browser
-    // to the URL specified in the annotationViews subtitle property.
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        if control == view.rightCalloutAccessoryView {
-            let app = UIApplication.sharedApplication()
-            if let toOpen = view.annotation?.subtitle! {
-                app.openURL(NSURL(string: toOpen)!)
-            }
-        }
-    }
+
 
 }
 
