@@ -116,13 +116,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
 
-        // Present photo album view controller
+        // Present photo album view controller and pass annotation
         let photoAlbumViewContoller = storyboard!.instantiateViewControllerWithIdentifier("photoAlbumViewController") as! PhotoAlbumViewController
         photoAlbumViewContoller.annotation.coordinate = view.annotation!.coordinate
         navigationController!.pushViewController(photoAlbumViewContoller, animated: true)
-        
-        print("pin tapped")
-        print(view.annotation!.coordinate)
         
     }
     
