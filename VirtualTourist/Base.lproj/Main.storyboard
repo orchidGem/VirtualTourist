@@ -78,20 +78,40 @@
                                     <constraint firstAttribute="height" constant="364" id="UOn-xi-q1Q"/>
                                 </constraints>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="v0Y-87-UPo">
-                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="itemSize" width="148" height="150"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ImageCell" id="Zf7-d2-cSA" customClass="ImageCell" customModule="VirtualTourist" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="148" height="150"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="148" height="150"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="IZ9-Qo-Fex">
+                                                    <rect key="frame" x="0.0" y="0.0" width="148" height="150"/>
+                                                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="150" id="ZHh-Ai-hWt"/>
+                                                        <constraint firstAttribute="width" constant="148" id="pt7-gi-jva"/>
+                                                    </constraints>
+                                                </imageView>
+                                            </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="IZ9-Qo-Fex" secondAttribute="trailing" id="7sq-Da-kGU"/>
+                                            <constraint firstAttribute="bottom" secondItem="IZ9-Qo-Fex" secondAttribute="bottom" id="Fyt-cI-Dzf"/>
+                                            <constraint firstItem="IZ9-Qo-Fex" firstAttribute="top" secondItem="Zf7-d2-cSA" secondAttribute="top" id="WTg-IF-3Pw"/>
+                                            <constraint firstItem="IZ9-Qo-Fex" firstAttribute="leading" secondItem="Zf7-d2-cSA" secondAttribute="leading" id="edU-Na-P8b"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="imageView" destination="IZ9-Qo-Fex" id="sIM-Ra-Z0D"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
@@ -108,6 +128,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="collectionView" destination="A0j-5U-CwP" id="jf3-58-Nv3"/>
                         <outlet property="mapView" destination="Saa-qA-Mwy" id="MrW-TN-xRY"/>
                     </connections>
                 </viewController>

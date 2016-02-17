@@ -12,22 +12,43 @@ import MapKit
 class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var collectionView: UICollectionView!
     var annotation =  MKPointAnnotation()
-    var images: NSDictionary!
+    //var images: [String]!
+    var images = ["https://farm2.staticflickr.com/1652/24659375791_8a9da88c13.jpg", "https://farm2.staticflickr.com/1652/24659375791_8a9da88c13.jpg"]
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        print("view will appear")
+        
+        collectionView.reloadData()
+
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        print("view did load")
+        
         mapView.delegate = self
+        collectionView.delegate = self
+        collectionView.dataSource = self
         mapView.addAnnotation(annotation)
         
         FlickrClient.sharedInstance.getImagesByLatLong() { (success, imagesArray, errorString) in
             if success {
-                print(imagesArray)
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.images = imagesArray
+                    print(self.images)
+                    print("images loaded")
+                    self.collectionView.reloadData()
+                })
             } else {
                 print("FAIL!")
             }
         }
+        
     }
 }
 
@@ -40,6 +61,10 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ImageCell", forIndexPath: indexPath) as! ImageCell
+        let imageUrlString = NSURL(string: images[indexPath.row])
+        let imageData = NSData(contentsOfURL: imageUrlString!)
+        cell.imageView.image = UIImage(data: imageData!)
+        
         
         return cell
     }
