@@ -6,7 +6,7 @@
 //  Copyright © 2016 Laura Evans. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class FlickrClient: NSObject {
     
@@ -75,9 +75,18 @@ class FlickrClient: NSObject {
             }
             
             var images = [String]()
+            var fileName: String
             
             for photo in photosArray {
+                
+                // Append photo to array
                 images.append( photo["url_m"] as! String )
+                
+                // Name image
+                fileName = (NSURL(string: photo["url_m"] as! String)?.lastPathComponent)!
+                
+                // Save Image
+                self.saveImage(photo["url_m"] as! String, fileName: fileName)
             }
             
             completionHandler(success: true, imagesArray: images, error: nil)
@@ -85,8 +94,22 @@ class FlickrClient: NSObject {
         
         task.resume()
         
-    }
+    } // End getImagesByLatLong function
     
+    
+    // Mark: Save image to file
+    func saveImage(imageString: String, fileName: String) -> Void {
+        let imageUrlString = NSURL(string: imageString)
+        let imageData = NSData(contentsOfURL: imageUrlString!)
+        
+        let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+        if let image = UIImage(data: imageData!) {
+            let fileURL = documentsURL.URLByAppendingPathComponent(fileName)
+            if let imageData = UIImageJPEGRepresentation(image, 1) {
+                imageData.writeToURL(fileURL, atomically: false)
+            }
+        }
+    }
     
     
 }
