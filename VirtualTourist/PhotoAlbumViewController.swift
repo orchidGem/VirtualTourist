@@ -14,8 +14,8 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     var annotation =  MKPointAnnotation()
-    //var images: [String]!
-    var images = ["https://farm2.staticflickr.com/1652/24659375791_8a9da88c13.jpg", "https://farm2.staticflickr.com/1652/24659375791_8a9da88c13.jpg"]
+    var images = [String]()
+    var pin: Pin!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -36,7 +36,10 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
         collectionView.dataSource = self
         mapView.addAnnotation(annotation)
         
-        FlickrClient.sharedInstance.getImagesByLatLong() { (success, imagesArray, errorString) in
+        let latitude = String(annotation.coordinate.latitude)
+        let longitude = String(annotation.coordinate.longitude)
+        
+        FlickrClient.sharedInstance.getImagesByLatLong(latitude, longitude: longitude) { (success, imagesArray, errorString) in
             if success {
                 dispatch_async(dispatch_get_main_queue(), {
                     self.images = imagesArray
