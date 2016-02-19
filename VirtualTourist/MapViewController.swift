@@ -119,6 +119,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // Present photo album view controller and pass annotation
         let photoAlbumViewContoller = storyboard!.instantiateViewControllerWithIdentifier("photoAlbumViewController") as! PhotoAlbumViewController
         photoAlbumViewContoller.annotation.coordinate = view.annotation!.coordinate
+        
+        // Find the pin that matches the coordinates
+        for pin in pins {
+            if pin.latitude == view.annotation?.coordinate.latitude && pin.longitude == view.annotation?.coordinate.longitude {
+                photoAlbumViewContoller.pin = pin
+            }
+        }
+        
         navigationController!.pushViewController(photoAlbumViewContoller, animated: true)
         
     }
