@@ -16,15 +16,15 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     var annotation =  MKPointAnnotation()
     //var images = [String]()
     var images = ["https://farm2.staticflickr.com/1652/24659375791_8a9da88c13.jpg", "https://farm2.staticflickr.com/1652/24659375791_8a9da88c13.jpg"]
-
     var pin: Pin!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         print("view will appear")
-        print("Images in album")
-        print((pin.photos.count))
+        print("Images in album:")
+        print(pin.photos.count)
+        
         collectionView.reloadData()
 
     }
@@ -45,16 +45,19 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
 extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return images.count
+        return pin.photos.count
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ImageCell", forIndexPath: indexPath) as! ImageCell
-        let imageUrlString = NSURL(string: images[indexPath.row])
-        let imageData = NSData(contentsOfURL: imageUrlString!)
-        cell.imageView.image = UIImage(data: imageData!)
         
+        let photo = pin.photos[indexPath.row]
+        let filename = photo.filePath
+        
+        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+        let getImagePath = paths.stringByAppendingPathComponent(filename)
+        cell.imageView.image = UIImage(contentsOfFile: getImagePath)
         
         return cell
     }

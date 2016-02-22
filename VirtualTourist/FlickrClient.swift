@@ -15,7 +15,7 @@ class FlickrClient: NSObject {
     func getImagesByLatLong(latitude: String, longitude: String, completionHandler: (success: Bool, imagesArray: [String], error: String?) -> Void) {
         
         let session = NSURLSession.sharedSession()
-        let url = NSURL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2128ee64c0e22f255d092838a4866afc&page=1&per_page=100&extras=url_m&lat=\(latitude)&lon=\(longitude)&format=json&nojsoncallback=1")
+        let url = NSURL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2128ee64c0e22f255d092838a4866afc&page=1&per_page=5&extras=url_m&lat=\(latitude)&lon=\(longitude)&format=json&nojsoncallback=1")
         let request = NSURLRequest(URL: url!)
         
         print(request)
@@ -75,6 +75,7 @@ class FlickrClient: NSObject {
             }
             
             var images = [String]()
+            var fileNames = [String]()
             var fileName: String
             
             for photo in photosArray {
@@ -86,10 +87,13 @@ class FlickrClient: NSObject {
                 fileName = (NSURL(string: photo["url_m"] as! String)?.lastPathComponent)!
                 
                 // Save Image
-                //self.saveImage(photo["url_m"] as! String, fileName: fileName)
+                self.saveImage(photo["url_m"] as! String, fileName: fileName)
+                
+                // Append filename to fileName array
+                fileNames.append(fileName)
             }
             
-            completionHandler(success: true, imagesArray: images, error: nil)
+            completionHandler(success: true, imagesArray: fileNames, error: nil)
         }
         
         task.resume()
