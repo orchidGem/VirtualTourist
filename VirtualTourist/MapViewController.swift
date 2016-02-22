@@ -15,7 +15,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     var pins: [Pin]!
     @IBOutlet weak var mapView: MKMapView!
     
-    lazy var sharedContext: NSManagedObjectContext = {
+    lazy var sharedContextPin: NSManagedObjectContext = {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }()
+    
+    lazy var sharedContextPhoto: NSManagedObjectContext = {
         return CoreDataStackManager.sharedInstance().managedObjectContext
     }()
     
@@ -61,16 +65,34 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         ]
         
         // Save new pin
-        let newPin = Pin(dictionary: dictionary, context: sharedContext)
+        let newPin = Pin(dictionary: dictionary, context: sharedContextPin)
         pins.append(newPin)
         CoreDataStackManager.sharedInstance().saveContext()
         
+        // Get String values from Coordinates for FlickrClient
+        let latitude = pinCoordinates.latitude.description
+        let longitude = pinCoordinates.longitude.description
+        
+        // Fetch photos for Pin
+        FlickrClient.sharedInstance.getImagesByLatLong(latitude, longitude: longitude) { (success, imagesArray, errorString) in
+            if success {
+                let photosCount = imagesArray.count
+                print("\(photosCount) images loaded, time to loop through the array")
+                for image in imagesArray {
+                    let photo = Photo(dictionary: [Photo.Keys.FilePath : image], context: self.sharedContextPhoto)
+                    photo.pin = newPin
+                }
+                CoreDataStackManager.sharedInstance().saveContext()
+            } else {
+                print("FAIL!")
+            }
+        }
     }
     
     func fetchAllPins() -> [Pin] {
         let fetchRequest = NSFetchRequest(entityName: "Pin")
         do {
-            return try sharedContext.executeFetchRequest(fetchRequest) as! [Pin]
+            return try sharedContextPin.executeFetchRequest(fetchRequest) as! [Pin]
         } catch {
             print("Error in fetch request \(error)")
             return [Pin]()
