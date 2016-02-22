@@ -21,7 +21,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
         super.viewWillAppear(animated)
         
         print("view will appear")
-        print(pin.longitude)
+        print(pin)
         
         collectionView.reloadData()
 

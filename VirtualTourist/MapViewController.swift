@@ -62,6 +62,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         // Save new pin
         let newPin = Pin(dictionary: dictionary, context: sharedContext)
+        pins.append(newPin)
         CoreDataStackManager.sharedInstance().saveContext()
         
     }
