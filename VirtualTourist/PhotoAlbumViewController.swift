@@ -68,16 +68,26 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        // Delete photo from pin and from collection view
-//        pin.photos.removeAtIndex(indexPath.item)
-//        CoreDataStackManager.sharedInstance().saveContext()
-//        collectionView.deleteItemsAtIndexPaths([indexPath])
+        let photoToDelete = pin.photos[indexPath.item]
+        let filename = photoToDelete.filePath
         
-        sharedContext.deleteObject(pin.photos[indexPath.item])
+        // Remove photo from shared context and save
+        sharedContext.deleteObject(photoToDelete)
         CoreDataStackManager.sharedInstance().saveContext()
+        
+        // Delete file from Documents folder
+        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+        let imagePath = paths.stringByAppendingPathComponent(filename)
+        
+        do {
+            try NSFileManager.defaultManager().removeItemAtPath(imagePath)
+        } catch let error as NSError {
+            print("Error deleting file :( \(error)")
+        }
+        
+        // Remove cell from collection view
         collectionView.deleteItemsAtIndexPaths([indexPath])
 
-        print(indexPath.item)
     }
     
 }
