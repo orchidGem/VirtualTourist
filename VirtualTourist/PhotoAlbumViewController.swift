@@ -8,15 +8,18 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     var annotation =  MKPointAnnotation()
-    //var images = [String]()
-    var images = ["https://farm2.staticflickr.com/1652/24659375791_8a9da88c13.jpg", "https://farm2.staticflickr.com/1652/24659375791_8a9da88c13.jpg"]
     var pin: Pin!
+    
+    lazy var sharedContext: NSManagedObjectContext = {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }()
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -37,6 +40,7 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
         mapView.delegate = self
         collectionView.delegate = self
         collectionView.dataSource = self
+        
         mapView.addAnnotation(annotation)
         
     }
@@ -60,6 +64,20 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
         cell.imageView.image = UIImage(contentsOfFile: getImagePath)
         
         return cell
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        
+        // Delete photo from pin and from collection view
+//        pin.photos.removeAtIndex(indexPath.item)
+//        CoreDataStackManager.sharedInstance().saveContext()
+//        collectionView.deleteItemsAtIndexPaths([indexPath])
+        
+        sharedContext.deleteObject(pin.photos[indexPath.item])
+        CoreDataStackManager.sharedInstance().saveContext()
+        collectionView.deleteItemsAtIndexPaths([indexPath])
+
+        print(indexPath.item)
     }
     
 }
