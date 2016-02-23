@@ -138,6 +138,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     // MARK: - MKMapViewDelegate
 
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        
+        // Change annotations view's state after selected
+        mapView.deselectAnnotation(view.annotation, animated: false)
 
         // Present photo album view controller and pass annotation
         let photoAlbumViewContoller = storyboard!.instantiateViewControllerWithIdentifier("photoAlbumViewController") as! PhotoAlbumViewController
