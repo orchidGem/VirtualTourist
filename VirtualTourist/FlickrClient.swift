@@ -15,7 +15,7 @@ class FlickrClient: NSObject {
     func getImagesByLatLong(latitude: String, longitude: String, completionHandler: (success: Bool, imagesArray: [String], error: String?) -> Void) {
         
         let session = NSURLSession.sharedSession()
-        let url = NSURL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2128ee64c0e22f255d092838a4866afc&page=1&per_page=5&extras=url_m&lat=\(latitude)&lon=\(longitude)&format=json&nojsoncallback=1")
+        let url = NSURL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2128ee64c0e22f255d092838a4866afc&page=1&per_page=30&extras=url_m&lat=\(latitude)&lon=\(longitude)&format=json&nojsoncallback=1")
         let request = NSURLRequest(URL: url!)
         
         print(request)

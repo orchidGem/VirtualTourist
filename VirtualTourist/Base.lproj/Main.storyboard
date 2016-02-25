@@ -68,15 +68,15 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Saa-qA-Mwy">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="237"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="200"/>
                                 <color key="backgroundColor" red="0.77456825659999995" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            </mapView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="A0j-5U-CwP">
-                                <rect key="frame" x="0.0" y="236" width="600" height="364"/>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="364" id="UOn-xi-q1Q"/>
+                                    <constraint firstAttribute="height" constant="200" id="QT1-AJ-c4G"/>
                                 </constraints>
+                            </mapView>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="A0j-5U-CwP">
+                                <rect key="frame" x="0.0" y="199" width="600" height="356"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="v0Y-87-UPo">
                                     <size key="itemSize" width="148" height="150"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -91,7 +91,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="148" height="150"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="IZ9-Qo-Fex">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IZ9-Qo-Fex">
                                                     <rect key="frame" x="0.0" y="0.0" width="148" height="150"/>
                                                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="calibratedRGB"/>
                                                     <constraints>
@@ -103,28 +103,35 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="IZ9-Qo-Fex" secondAttribute="trailing" id="7sq-Da-kGU"/>
-                                            <constraint firstAttribute="bottom" secondItem="IZ9-Qo-Fex" secondAttribute="bottom" id="Fyt-cI-Dzf"/>
-                                            <constraint firstItem="IZ9-Qo-Fex" firstAttribute="top" secondItem="Zf7-d2-cSA" secondAttribute="top" id="WTg-IF-3Pw"/>
-                                            <constraint firstItem="IZ9-Qo-Fex" firstAttribute="leading" secondItem="Zf7-d2-cSA" secondAttribute="leading" id="edU-Na-P8b"/>
-                                        </constraints>
                                         <connections>
                                             <outlet property="imageView" destination="IZ9-Qo-Fex" id="sIM-Ra-Z0D"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mdK-Us-y6B">
+                                <rect key="frame" x="0.0" y="553" width="600" height="47"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="yZu-Wd-Gb5"/>
+                                </constraints>
+                                <state key="normal" title="New Collection"/>
+                                <connections>
+                                    <action selector="newCollection:" destination="xIa-Zj-Qy5" eventType="touchUpInside" id="Dfg-Hw-sLh"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="Saa-qA-Mwy" secondAttribute="trailing" id="3EN-eV-hEu"/>
-                            <constraint firstAttribute="trailing" secondItem="A0j-5U-CwP" secondAttribute="trailing" id="A9y-Bf-c0b"/>
-                            <constraint firstItem="A0j-5U-CwP" firstAttribute="top" secondItem="Saa-qA-Mwy" secondAttribute="bottom" constant="-1" id="Lud-nV-h3Q"/>
-                            <constraint firstItem="A0j-5U-CwP" firstAttribute="leading" secondItem="KxQ-UG-s1g" secondAttribute="leading" id="aly-ao-CfS"/>
-                            <constraint firstItem="Saa-qA-Mwy" firstAttribute="leading" secondItem="KxQ-UG-s1g" secondAttribute="leading" id="osB-HH-gDp"/>
-                            <constraint firstItem="kOP-Qc-eTH" firstAttribute="top" secondItem="A0j-5U-CwP" secondAttribute="bottom" id="tcI-X8-2V5"/>
-                            <constraint firstItem="Saa-qA-Mwy" firstAttribute="top" secondItem="KxQ-UG-s1g" secondAttribute="top" id="zE1-ku-YVG"/>
+                            <constraint firstItem="A0j-5U-CwP" firstAttribute="top" secondItem="Saa-qA-Mwy" secondAttribute="bottom" constant="-1" id="Gqw-X0-geo"/>
+                            <constraint firstItem="Saa-qA-Mwy" firstAttribute="top" secondItem="KxQ-UG-s1g" secondAttribute="top" id="LlQ-Gb-Daa"/>
+                            <constraint firstAttribute="trailing" secondItem="Saa-qA-Mwy" secondAttribute="trailing" id="Me5-Jf-ypD"/>
+                            <constraint firstAttribute="trailing" secondItem="mdK-Us-y6B" secondAttribute="trailing" id="Njn-Rd-0PE"/>
+                            <constraint firstItem="mdK-Us-y6B" firstAttribute="top" secondItem="A0j-5U-CwP" secondAttribute="bottom" constant="-2" id="iH1-w3-kd6"/>
+                            <constraint firstItem="mdK-Us-y6B" firstAttribute="leading" secondItem="KxQ-UG-s1g" secondAttribute="leading" id="nkP-da-YCa"/>
+                            <constraint firstItem="Saa-qA-Mwy" firstAttribute="leading" secondItem="KxQ-UG-s1g" secondAttribute="leading" id="rZA-o8-wWL"/>
+                            <constraint firstItem="kOP-Qc-eTH" firstAttribute="top" secondItem="mdK-Us-y6B" secondAttribute="bottom" id="uoR-6D-vwS"/>
+                            <constraint firstAttribute="trailing" secondItem="A0j-5U-CwP" secondAttribute="trailing" id="xun-Y1-tfJ"/>
+                            <constraint firstItem="A0j-5U-CwP" firstAttribute="leading" secondItem="KxQ-UG-s1g" secondAttribute="leading" id="zSt-iO-Q3W"/>
                         </constraints>
                     </view>
                     <connections>
