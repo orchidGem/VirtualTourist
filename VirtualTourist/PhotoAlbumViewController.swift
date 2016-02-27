@@ -10,12 +10,17 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
+class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource  {
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     var annotation =  MKPointAnnotation()
     var pin: Pin!
+    
+    // Keep track of insertions, deletions, and updates.
+    var insertedIndexPaths: [NSIndexPath]!
+    var deletedIndexPaths: [NSIndexPath]!
+    var updatedIndexPaths: [NSIndexPath]!
     
     lazy var sharedContext: NSManagedObjectContext = {
         return CoreDataStackManager.sharedInstance().managedObjectContext
@@ -23,9 +28,6 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        collectionView.reloadData()
-
     }
     
     override func viewDidLoad() {
@@ -36,6 +38,15 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
         collectionView.dataSource = self
         
         mapView.addAnnotation(annotation)
+        
+        // Fetch Photos
+        do {
+            try fetchedResultsController.performFetch()
+        } catch let error as NSError {
+            print("error fetching results \(error)")
+        }
+        // Set the fetchedResultsController.delegate = self
+        fetchedResultsController.delegate = self
     }
     
     // Layout the collection view
@@ -51,6 +62,10 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
         collectionView.collectionViewLayout = layout
     }
 
+    
+    // MARK : Custom Methods
+    
+    // Refresh collection
     @IBAction func newCollection(sender: AnyObject) {
         
         // delete all images in pin
@@ -83,6 +98,8 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
 
     }
     
+    // Delete Photo
+    
     func deletePhoto(photo: Photo) {
         let filename = photo.filePath
         
@@ -92,21 +109,26 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
         
         // Delete file from Documents folder
         let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
-        let imagePath = paths.stringByAppendingPathComponent(filename)
+        let imagePath = paths.stringByAppendingPathComponent(filename!)
         
         do {
             try NSFileManager.defaultManager().removeItemAtPath(imagePath)
         } catch let error as NSError {
             print("Error deleting file :( \(error)")
         }
-        
     }
-}
-
-extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-
+    
+    //MARK: UICollectionView
+    
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        return self.fetchedResultsController.sections?.count ?? 0
+    }
+    
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return pin.photos.count
+        let sectionInfo = self.fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
+        
+        print("number Of Cells: \(sectionInfo.numberOfObjects)")
+        return sectionInfo.numberOfObjects
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -117,7 +139,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
         let filename = photo.filePath
         
         let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
-        let getImagePath = paths.stringByAppendingPathComponent(filename)
+        let getImagePath = paths.stringByAppendingPathComponent(filename!)
         cell.imageView.image = UIImage(contentsOfFile: getImagePath)
         
         return cell
@@ -130,7 +152,96 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
         
         // Remove cell from collection view
         collectionView.deleteItemsAtIndexPaths([indexPath])
-
+        
     }
     
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        fetchRequest.sortDescriptors = []
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.sharedContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        
+        return fetchedResultsController
+    }()
+    
+    // MARK: - Fetched Results Controller Delegate
+    
+    // Whenever changes are made to Core Data the following three methods are invoked. This first method is used to create
+    // three fresh arrays to record the index paths that will be changed.
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        // We are about to handle some new changes. Start out with empty arrays for each change type
+        insertedIndexPaths = [NSIndexPath]()
+        deletedIndexPaths = [NSIndexPath]()
+        updatedIndexPaths = [NSIndexPath]()
+        
+        print("in controllerWillChangeContent")
+    }
+    
+    // The second method may be called multiple times, once for each Photo object that is added, deleted, or changed.
+    // We store the incex paths into the three arrays.
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+        
+        switch type{
+            
+        case .Insert:
+            print("Insert an item")
+            // Here we are noting that a new Photo instance has been added to Core Data. We remember its index path
+            // so that we can add a cell in "controllerDidChangeContent". Note that the "newIndexPath" parameter has
+            // the index path that we want in this case
+            insertedIndexPaths.append(newIndexPath!)
+            break
+        case .Delete:
+            print("Delete an item")
+            // Here we are noting that a Photo instance has been deleted from Core Data. We keep remember its index path
+            // so that we can remove the corresponding cell in "controllerDidChangeContent". The "indexPath" parameter has
+            // value that we want in this case.
+            deletedIndexPaths.append(indexPath!)
+            break
+        case .Update:
+            print("Update an item.")
+            // We don't expect Photo instances to change after they are created. But Core Data would
+            // notify us of changes if any occured. This can be useful if you want to respond to changes
+            // that come about after data is downloaded. For example, when an images is downloaded from
+            // Flickr in the Virtual Tourist app
+            updatedIndexPaths.append(indexPath!)
+            break
+        case .Move:
+            print("Move an item. We don't expect to see this in this app.")
+            break
+        default:
+            break
+        }
+    }
+    
+    // This method is invoked after all of the changed in the current batch have been collected
+    // into the three index path arrays (insert, delete, and upate). We now need to loop through the
+    // arrays and perform the changes.
+    //
+    // The most interesting thing about the method is the collection view's "performBatchUpdates" method.
+    // Notice that all of the changes are performed inside a closure that is handed to the collection view.
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        
+        print("in controllerDidChangeContent. changes.count: \(insertedIndexPaths.count + deletedIndexPaths.count)")
+        
+        collectionView.performBatchUpdates({() -> Void in
+            
+            for indexPath in self.insertedIndexPaths {
+                self.collectionView.insertItemsAtIndexPaths([indexPath])
+            }
+            
+            for indexPath in self.deletedIndexPaths {
+                self.collectionView.deleteItemsAtIndexPaths([indexPath])
+            }
+            
+            for indexPath in self.updatedIndexPaths {
+                self.collectionView.reloadItemsAtIndexPaths([indexPath])
+            }
+            
+            }, completion: nil)
+    }
+
+    
 }
+

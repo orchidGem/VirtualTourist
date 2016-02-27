@@ -54,16 +54,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "VirtualTourist/PhotoAlbumViewController.swift"
-            timestampString = "478124498.740103"
+            filePath = "VirtualTourist/MapViewController.swift"
+            timestampString = "478220874.005763"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
-            landmarkName = "newCollection(_:)"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "dropPin(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
