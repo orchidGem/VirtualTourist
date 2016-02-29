@@ -31,7 +31,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         //print(mapView.region)
         
-        var longPressRecogniser = UILongPressGestureRecognizer(target: self, action: "dropPin:")
+        let longPressRecogniser = UILongPressGestureRecognizer(target: self, action: "dropPin:")
         longPressRecogniser.minimumPressDuration = 1
         mapView.addGestureRecognizer(longPressRecogniser)
         
@@ -78,11 +78,24 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             if success {
                 let photosCount = imagesArray.count
                 print("\(photosCount) images loaded, time to loop through the array")
+                
+                // Save empty photos
                 for image in imagesArray {
-                    let photo = Photo(dictionary: [Photo.Keys.FilePath : image], context: self.sharedContextPhoto)
+                    let photo = Photo(dictionary: [Photo.Keys.FilePath : ""], context: self.sharedContextPhoto)
                     photo.pin = newPin
                 }
                 CoreDataStackManager.sharedInstance().saveContext()
+                
+                // Loop through images and save files, updates photo objects
+                for (index, image) in imagesArray.enumerate() {
+                    let fileName = FlickrClient.sharedInstance.saveImage(image)
+                    newPin.photos[index].filePath = fileName
+                    print("image downloaded and saved")
+                    CoreDataStackManager.sharedInstance().saveContext()
+                }
+                
+                print("finished downloading images")
+                
             } else {
                 print("FAIL!")
             }

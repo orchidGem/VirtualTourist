@@ -18,8 +18,6 @@ class FlickrClient: NSObject {
         let url = NSURL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2128ee64c0e22f255d092838a4866afc&page=1&per_page=30&extras=url_m&lat=\(latitude)&lon=\(longitude)&format=json&nojsoncallback=1")
         let request = NSURLRequest(URL: url!)
         
-        print(request)
-        
         let task = session.dataTaskWithRequest(request) {(data, response, error) in
             
             // GUARD: was there an error?
@@ -75,25 +73,15 @@ class FlickrClient: NSObject {
             }
             
             var images = [String]()
-            var fileNames = [String]()
-            var fileName: String
             
             for photo in photosArray {
                 
                 // Append photo to array
                 images.append( photo["url_m"] as! String )
-                
-                // Name image
-                fileName = (NSURL(string: photo["url_m"] as! String)?.lastPathComponent)!
-                
-                // Save Image
-                self.saveImage(photo["url_m"] as! String, fileName: fileName)
-                
-                // Append filename to fileName array
-                fileNames.append(fileName)
+
             }
             
-            completionHandler(success: true, imagesArray: fileNames, error: nil)
+            completionHandler(success: true, imagesArray: images, error: nil)
         }
         
         task.resume()
@@ -102,10 +90,16 @@ class FlickrClient: NSObject {
     
     
     // Mark: Save image to file
-    func saveImage(imageString: String, fileName: String) -> Void {
+    func saveImage(imageString: String) -> String {
+        
+        // Name image
+        let fileName = (NSURL(string: imageString)?.lastPathComponent)!
+
+        // Convert String URL
         let imageUrlString = NSURL(string: imageString)
         let imageData = NSData(contentsOfURL: imageUrlString!)
         
+        // Save file
         let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
         if let image = UIImage(data: imageData!) {
             let fileURL = documentsURL.URLByAppendingPathComponent(fileName)
@@ -113,7 +107,6 @@ class FlickrClient: NSObject {
                 imageData.writeToURL(fileURL, atomically: false)
             }
         }
+        return fileName
     }
-    
-    
 }

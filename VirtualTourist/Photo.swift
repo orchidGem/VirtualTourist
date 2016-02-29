@@ -15,7 +15,7 @@ class Photo: NSManagedObject {
         static let FilePath = "file_path"
     }
     
-    @NSManaged var filePath: String
+    @NSManaged var filePath: String?
     @NSManaged var pin: Pin?
     
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
@@ -26,7 +26,7 @@ class Photo: NSManagedObject {
         let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context)!
         super.init(entity: entity, insertIntoManagedObjectContext: context)
         
-        filePath = dictionary[Keys.FilePath] as! String
+        filePath = dictionary[Keys.FilePath] as? String
     }
     
 }
