@@ -91,18 +91,17 @@
                                             <rect key="frame" x="0.0" y="0.0" width="148" height="150"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IZ9-Qo-Fex">
-                                                    <rect key="frame" x="0.0" y="0.0" width="148" height="150"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="IZ9-Qo-Fex">
+                                                    <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
                                                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="150" id="ZHh-Ai-hWt"/>
-                                                        <constraint firstAttribute="width" constant="148" id="pt7-gi-jva"/>
+                                                        <constraint firstAttribute="width" constant="150" id="pt7-gi-jva"/>
                                                     </constraints>
                                                 </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <connections>
                                             <outlet property="imageView" destination="IZ9-Qo-Fex" id="sIM-Ra-Z0D"/>
                                         </connections>
@@ -144,4 +143,7 @@
             <point key="canvasLocation" x="912" y="326"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="placeholder" width="200" height="200"/>
+    </resources>
 </document>

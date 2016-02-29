@@ -69,28 +69,37 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, NSFetchedRe
     @IBAction func newCollection(sender: AnyObject) {
         
         // delete all images in pin
-        for photo in pin.photos {
-            deletePhoto(photo)
+        for photo in fetchedResultsController.fetchedObjects as! [Photo] {
+            deleteFile(photo)
+            sharedContext.deleteObject(photo)
         }
         
-        collectionView.reloadData()
+        let latitude = annotation.coordinate.latitude.description
+        let longitude = annotation.coordinate.longitude.description
         
-        // Fetch new images
-        FlickrClient.sharedInstance.getImagesByLatLong(pin.latitude.description, longitude: pin.longitude.description) { (success, imagesArray, errorString) in
+        // Fetch photos for Pin
+        FlickrClient.sharedInstance.getImagesByLatLong(latitude, longitude: longitude) { (success, imagesArray, errorString) in
             if success {
                 let photosCount = imagesArray.count
                 print("\(photosCount) images loaded, time to loop through the array")
-                for image in imagesArray {
-                    let photo = Photo(dictionary: [Photo.Keys.FilePath : image], context: self.sharedContext)
+                
+                // Save empty photos
+                for _ in imagesArray {
+                    let photo = Photo(dictionary: [Photo.Keys.FilePath : ""], context: self.sharedContext)
                     photo.pin = self.pin
                 }
                 CoreDataStackManager.sharedInstance().saveContext()
                 
-                // Reload collection view
-                dispatch_async(dispatch_get_main_queue()) {
-                    print("reload cells")
-                    self.collectionView.reloadData()
+                // Loop through images and save files, updates photo objects
+                for (index, image) in imagesArray.enumerate() {
+                    let fileName = FlickrClient.sharedInstance.saveImage(image)
+                    self.pin.photos[index].filePath = fileName
+                    print("image downloaded and saved")
+                    CoreDataStackManager.sharedInstance().saveContext()
                 }
+                
+                print("finished downloading images")
+                
             } else {
                 print("FAIL!")
             }
@@ -100,12 +109,8 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, NSFetchedRe
     
     // Delete Photo
     
-    func deletePhoto(photo: Photo) {
+    func deleteFile(photo: Photo) {
         let filename = photo.filePath
-        
-        // Remove photo from shared context and save
-        sharedContext.deleteObject(photo)
-        CoreDataStackManager.sharedInstance().saveContext()
         
         // Delete file from Documents folder
         let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
@@ -135,30 +140,41 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, NSFetchedRe
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ImageCell", forIndexPath: indexPath) as! ImageCell
         
-        let photo = pin.photos[indexPath.row]
-        let filename = photo.filePath
+        let photo = fetchedResultsController.objectAtIndexPath(indexPath)
         
-        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
-        let getImagePath = paths.stringByAppendingPathComponent(filename!)
-        cell.imageView.image = UIImage(contentsOfFile: getImagePath)
+        if photo.filePath!!.isEmpty {
+            print("image exists")
+            cell.imageView.image = UIImage(named: "placeholder")
+        } else {
+            print("no image")
+            let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+            let imagePath = paths.stringByAppendingPathComponent(photo.filePath!!)
+            cell.imageView.image = UIImage(contentsOfFile: imagePath)
+        }
+        
+        
         
         return cell
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        let photoToDelete = pin.photos[indexPath.item]
-        deletePhoto(photoToDelete)
+        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
-        // Remove cell from collection view
-        collectionView.deleteItemsAtIndexPaths([indexPath])
+        // Delete image file
+        deleteFile(photo)
         
+        // Delete object
+        sharedContext.deleteObject(photo)
+        CoreDataStackManager.sharedInstance().saveContext()
+    
     }
     
     lazy var fetchedResultsController: NSFetchedResultsController = {
         
         let fetchRequest = NSFetchRequest(entityName: "Photo")
         fetchRequest.sortDescriptors = []
+        fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin)
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.sharedContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
