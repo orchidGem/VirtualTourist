@@ -12,11 +12,13 @@ class FlickrClient: NSObject {
     
     static let sharedInstance = FlickrClient()
     
-    func getImagesByLatLong(latitude: String, longitude: String, completionHandler: (success: Bool, imagesArray: [String], error: String?) -> Void) {
+    func makeFlickrRequest(latitude: String, longitude: String, pageNumber: String, completionHandler: (success: Bool, flickerReturnData: AnyObject, error: String?) -> Void) {
         
         let session = NSURLSession.sharedSession()
-        let url = NSURL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2128ee64c0e22f255d092838a4866afc&page=1&per_page=30&extras=url_m&lat=\(latitude)&lon=\(longitude)&format=json&nojsoncallback=1")
+        let url = NSURL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=2128ee64c0e22f255d092838a4866afc&page=\(pageNumber)&per_page=30&extras=url_m&lat=\(latitude)&lon=\(longitude)&format=json&nojsoncallback=1")
         let request = NSURLRequest(URL: url!)
+        
+        print(request)
         
         let task = session.dataTaskWithRequest(request) {(data, response, error) in
             
@@ -66,25 +68,72 @@ class FlickrClient: NSObject {
                 return
             }
             
-            // GUARD: Is the photo key in the photosDictionary?
-            guard let photosArray = photosDictionary["photo"] as? [[String:AnyObject]] else {
-                print("Cannot find key photo in photos array")
-                return
-            }
-            
-            var images = [String]()
-            
-            for photo in photosArray {
-                
-                // Append photo to array
-                images.append( photo["url_m"] as! String )
-
-            }
-            
-            completionHandler(success: true, imagesArray: images, error: nil)
+            completionHandler(success: true, flickerReturnData: photosDictionary, error: nil)
         }
         
         task.resume()
+
+        
+    }
+    
+    
+    func getImagesByLatLong(latitude: String, longitude: String, completionHandler: (success: Bool, imagesArray: [String], error: String?) -> Void) {
+        
+        // Get Total Page Number
+        makeFlickrRequest(latitude, longitude: longitude, pageNumber: "1") { (success, photosDictionary, errorString) in
+            if !success {
+                print("error making Flickr Request")
+                return
+            }
+            
+            /* GUARD: Is "pages" key in the photosDictionary? */
+            guard let totalPages = photosDictionary["pages"] as? Int else {
+                print("Cannot find key 'pages' in \(photosDictionary)")
+                return
+            }
+            
+            let randomPage: Int!
+            
+            if totalPages > 100 {
+                randomPage = Int(arc4random_uniform(UInt32(100))) + 1
+            } else {
+                randomPage = Int(arc4random_uniform(UInt32(totalPages))) + 1
+            }
+            
+            /* Pick a random page! */
+            let pageNumber = String(randomPage)
+            
+            print("new page number is: \(pageNumber)")
+            
+            self.makeFlickrRequest(latitude, longitude: longitude, pageNumber: pageNumber) { (success, photosDictionary, errorString) in
+                
+                print("new page number in request is: \(pageNumber)")
+                
+                if !success {
+                    print("error making Flickr Request")
+                    return
+                }
+                
+                // GUARD: Is the photo key in the photosDictionary?
+                guard let photosArray = photosDictionary["photo"] as? [[String:AnyObject]] else {
+                    print("Cannot find key photo in photos array")
+                    return
+                }
+                
+                var images = [String]()
+                
+                for photo in photosArray {
+                    
+                    // Append photo to array
+                    images.append( photo["url_m"] as! String )
+                    
+                }
+                
+                completionHandler(success: true, imagesArray: images, error: nil)
+                
+            }
+
+        }
         
     } // End getImagesByLatLong function
     

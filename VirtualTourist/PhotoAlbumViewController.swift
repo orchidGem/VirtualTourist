@@ -132,7 +132,6 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, NSFetchedRe
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionInfo = self.fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
         
-        print("number Of Cells: \(sectionInfo.numberOfObjects)")
         return sectionInfo.numberOfObjects
     }
     
@@ -143,10 +142,8 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, NSFetchedRe
         let photo = fetchedResultsController.objectAtIndexPath(indexPath)
         
         if photo.filePath!!.isEmpty {
-            print("image exists")
             cell.imageView.image = UIImage(named: "placeholder")
         } else {
-            print("no image")
             let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
             let imagePath = paths.stringByAppendingPathComponent(photo.filePath!!)
             cell.imageView.image = UIImage(contentsOfFile: imagePath)
@@ -202,14 +199,14 @@ class PhotoAlbumViewController: UIViewController, MKMapViewDelegate, NSFetchedRe
         switch type{
             
         case .Insert:
-            print("Insert an item")
+            //print("Insert an item")
             // Here we are noting that a new Photo instance has been added to Core Data. We remember its index path
             // so that we can add a cell in "controllerDidChangeContent". Note that the "newIndexPath" parameter has
             // the index path that we want in this case
             insertedIndexPaths.append(newIndexPath!)
             break
         case .Delete:
-            print("Delete an item")
+            //print("Delete an item")
             // Here we are noting that a Photo instance has been deleted from Core Data. We keep remember its index path
             // so that we can remove the corresponding cell in "controllerDidChangeContent". The "indexPath" parameter has
             // value that we want in this case.
